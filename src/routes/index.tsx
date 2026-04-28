@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import lampion from "@/assets/lampion.jpg";
+import lampion from "@/assets/lampion.mp4";
+import lampionPoster from "@/assets/lampion.jpg";
 import { Navbar } from "@/components/Navbar";
+import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -22,18 +24,58 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [zoomIn, setZoomIn] = useState(false);
+
+  useEffect(() => {
+    setZoomIn(true);
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          void video.play().catch(() => undefined);
+          return;
+        }
+
+        video.pause();
+      },
+      { threshold: 0.25 },
+    );
+
+    observer.observe(video);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="relative min-h-[100dvh] overflow-hidden bg-[#0B110D]">
-      {/* Hero photo */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${lampion})` }}
+      {/* Hero video */}
+      <video
+        ref={videoRef}
+        className={`absolute inset-0 h-full w-full object-cover transition-transform duration-[16000ms] ease-out ${
+          zoomIn ? "scale-110" : "scale-100"
+        }`}
+        src={lampion}
+        poster={lampionPoster}
+        autoPlay
+        muted
+        loop
+        playsInline
         suppressHydrationWarning
         aria-hidden
       />
       {/* Subtle dark wash for legibility */}
       <div
-        className="absolute inset-0 bg-gradient-to-b from-[#0B110D]/40 via-[#0B110D]/30 to-[#0B110D]"
+        className="absolute inset-0 bg-gradient-to-b from-[#0B110D]/85 via-[#0B110D]/45 to-[#0B110D]"
+        aria-hidden
+      />
+      <div
+        className="absolute inset-x-0 top-0 h-[48dvh] bg-gradient-to-b from-black/70 via-black/35 to-transparent"
         aria-hidden
       />
 
