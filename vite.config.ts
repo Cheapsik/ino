@@ -7,5 +7,14 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
-    base: '/ino/'
+  cloudflare: false,
+  tanstackStart: {
+    prerender: { enabled: true },
+    router: {
+      basepath: "/ino",
+    },
+  },
+  vite: {
+    base: "/ino/",
+  },
 });
