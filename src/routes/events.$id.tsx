@@ -1,4 +1,4 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, Outlet, createFileRoute, useMatchRoute } from "@tanstack/react-router";
 import { Calendar, Clock, Map, MapPin, Trophy, Users, X, ZoomIn } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Navbar } from "@/components/Navbar";
@@ -86,6 +86,23 @@ function getCountdownLabel(now: number, eventStart: number, status: Orienteering
 
 function EventDetailsPage() {
   const { id } = Route.useParams();
+  const matchRoute = useMatchRoute();
+  const isDetailsRoute = Boolean(
+    matchRoute({
+      to: "/events/$id",
+      params: { id },
+      fuzzy: false,
+    }),
+  );
+
+  if (!isDetailsRoute) {
+    return <Outlet />;
+  }
+
+  return <EventDetailsContent id={id} />;
+}
+
+function EventDetailsContent({ id }: { id: string }) {
   const event = events.find((item) => item.id === id);
   const [now, setNow] = useState(() => Date.now());
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -145,7 +162,7 @@ function EventDetailsPage() {
           ← Nadchodzące biegi
         </Link>
 
-        <section className="relative overflow-hidden rounded-3xl border border-white/10">
+        <section className="relative mt-3 overflow-hidden rounded-3xl border border-white/10">
           {event.mapImageUrl ? (
             <img
               src={event.mapImageUrl}
