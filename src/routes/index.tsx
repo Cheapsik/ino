@@ -25,11 +25,27 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const isLoopRestartingRef = useRef(false);
   const [zoomIn, setZoomIn] = useState(false);
 
   useEffect(() => {
     setZoomIn(true);
   }, []);
+
+  const handleSeamlessLoop = () => {
+    const video = videoRef.current;
+    if (!video || !Number.isFinite(video.duration) || video.duration <= 0) return;
+    if (isLoopRestartingRef.current || video.seeking) return;
+
+    if (video.duration - video.currentTime <= 0.08) {
+      isLoopRestartingRef.current = true;
+      video.currentTime = 0.01;
+      void video.play().catch(() => undefined);
+      requestAnimationFrame(() => {
+        isLoopRestartingRef.current = false;
+      });
+    }
+  };
 
   useEffect(() => {
     const video = videoRef.current;
@@ -64,8 +80,9 @@ function Index() {
         poster={lampionPoster}
         autoPlay
         muted
-        loop
+        loop={false}
         playsInline
+        onTimeUpdate={handleSeamlessLoop}
         suppressHydrationWarning
         aria-hidden
       />
