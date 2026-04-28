@@ -153,7 +153,14 @@
 
   html,
   body {
-    background-color: #0b110d;
+    background-color: #111214;
+    background-image:
+      radial-gradient(ellipse at center, rgba(8, 20, 12, 0.1) 32%, rgba(0, 0, 0, 0.42) 100%),
+      linear-gradient(rgba(10, 18, 13, 0.5), rgba(9, 15, 12, 0.62)), url("./assets/lampion.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     color: var(--color-foreground);
     font-family:
       ui-sans-serif,
@@ -197,5 +204,46 @@
 
   .text-muted-forest {
     color: #a3b5a8;
+  }
+
+  .hero-notebook-grid {
+    background-color: #0f1810;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .map-grid-bg {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  .map-scanline {
+    position: absolute;
+    inset-inline: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 102, 0.7), transparent);
+    animation: map-scan 3s linear infinite;
+    pointer-events: none;
+  }
+}
+
+@keyframes map-scan {
+  0% {
+    top: 0;
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    top: calc(100% - 2px);
+    opacity: 0.2;
   }
 }

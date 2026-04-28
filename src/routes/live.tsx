@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { LiveClock } from "@/components/LiveClock";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { events } from "@/data/events";
 import { leaderboard, type Category, type LeaderboardEntry } from "@/data/leaderboard";
 
 export const Route = createFileRoute("/live")({
@@ -65,9 +66,15 @@ function Row({ entry }: { entry: LeaderboardEntry }) {
 
 function LivePage() {
   const [tab, setTab] = useState<Category>("High");
+  const liveEvent = events.find((event) => event.status === "live") ?? events[0];
+  const eventDateLabel = new Intl.DateTimeFormat("pl-PL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(liveEvent.date));
 
   return (
-    <div className="min-h-[100dvh] bg-[#0B110D]">
+    <div className="min-h-[100dvh] bg-black/45">
       <Navbar />
 
       <main className="mx-auto w-full max-w-md px-5 pb-16 pt-6 sm:max-w-2xl lg:max-w-3xl">
@@ -75,23 +82,22 @@ function LivePage() {
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-70" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-70" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-red-400" />
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary">
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-red-400">
                 Live
               </span>
             </div>
             <h1 className="mt-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
-              Nocny Bieg o Puchar Lasu
+              {liveEvent.title}
             </h1>
-            <p className="mt-0.5 text-xs text-white/50">Puszcza Kampinoska · 12 maja 2026</p>
+            <p className="mt-0.5 text-xs text-white/50">
+              {liveEvent.location} · {eventDateLabel}
+            </p>
           </div>
 
-          <div className="text-right">
-            <p className="text-[10px] uppercase tracking-widest text-white/40">Czas</p>
-            <LiveClock />
-          </div>
+          <LiveClock raceStartTime={liveEvent.raceStartTime} eventStatus={liveEvent.status} />
         </header>
 
         <h2 className="mt-8 text-sm font-semibold uppercase tracking-widest text-white/70">

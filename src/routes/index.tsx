@@ -69,7 +69,7 @@ function Index() {
   }, []);
 
   return (
-    <div className="relative min-h-[100dvh] overflow-hidden bg-[#0B110D]">
+    <div className="relative min-h-[100dvh] overflow-hidden bg-black/45">
       {/* Hero video */}
       <video
         ref={videoRef}

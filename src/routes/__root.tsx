@@ -5,7 +5,7 @@ import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0B110D] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-black/45 px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-white">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-white">Chyba się pogubiłeś</h2>
@@ -74,7 +74,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="bg-[#0B110D] text-white antialiased">
+      <body className="text-white antialiased">
         {children}
         <Toaster />
         <Scripts />
