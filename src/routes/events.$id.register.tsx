@@ -1,12 +1,12 @@
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Navbar } from "@/components/Navbar";
 import { RegisterEventSummary } from "@/components/register/RegisterEventSummary";
 import { RegisterForm, type RegisterFormValues } from "@/components/register/RegisterForm";
 import { RegisterSuccess, type RegisterSuccessData } from "@/components/register/RegisterSuccess";
 import { toast } from "@/components/ui/toast";
-import { events, type EventLevel } from "@/data/events";
+import { events } from "@/data/events";
 
 const categorySchema = z.enum(["Low", "Medium", "High"]);
 
@@ -32,7 +32,6 @@ function EventRegisterPage() {
   const search = Route.useSearch() as RegisterSearchValues;
   const event = events.find((item) => item.id === id);
   const [submitSuccess, setSubmitSuccess] = useState<RegisterSuccessData | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<EventLevel | undefined>(search.category);
   const preselectedCategory = useMemo(() => {
     if (!event || event.status !== "open") {
       return undefined;
@@ -78,9 +77,6 @@ function EventRegisterPage() {
       category: payload.category,
     });
   };
-  const handleCategoryChange = useCallback((value?: EventLevel) => {
-    setSelectedCategory(value);
-  }, []);
 
   if (!event || event.status !== "open") {
     return null;
@@ -100,7 +96,7 @@ function EventRegisterPage() {
         </Link>
 
         <div className="mx-auto mt-3 w-full max-w-lg pb-10">
-          <RegisterEventSummary event={event} selectedCategory={selectedCategory} />
+          <RegisterEventSummary event={event} />
 
           <section className="mt-5 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-xl [box-shadow:inset_0_1px_0_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.4)]">
             {!submitSuccess ? (
@@ -108,7 +104,6 @@ function EventRegisterPage() {
                 event={event}
                 preselectedCategory={preselectedCategory}
                 onSubmit={onSubmit}
-                onCategoryChange={handleCategoryChange}
               />
             ) : (
               <RegisterSuccess event={event} successData={submitSuccess} />

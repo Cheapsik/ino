@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import lampion from "@/assets/lampion.mp4";
 import lampionPoster from "@/assets/lampion.jpg";
 import { Navbar } from "@/components/Navbar";
+import { hasLiveEvent } from "@/data/events";
 import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/")({
@@ -118,12 +119,14 @@ function Index() {
             >
               Przejdź do aplikacji
             </Link>
-            <Link
-              to="/live"
-              className="text-xs font-medium uppercase tracking-[0.2em] text-white/70 transition-colors hover:text-white"
-            >
-              Wyniki na żywo →
-            </Link>
+            {hasLiveEvent() ? (
+              <Link
+                to="/live"
+                className="text-xs font-medium uppercase tracking-[0.2em] text-white/70 transition-colors hover:text-white"
+              >
+                Wyniki na żywo →
+              </Link>
+            ) : null}
           </div>
         </main>
       </div>

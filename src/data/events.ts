@@ -195,3 +195,7 @@ export const events: OrienteeringEvent[] = [
     ],
   },
 ];
+
+export function hasLiveEvent(): boolean {
+  return events.some((event) => event.status === "live");
+}

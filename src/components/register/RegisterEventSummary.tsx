@@ -1,9 +1,8 @@
 import { Calendar, MapPin } from "lucide-react";
-import type { EventLevel, OrienteeringEvent } from "@/data/events";
+import type { OrienteeringEvent } from "@/data/events";
 
 type RegisterEventSummaryProps = {
   event: OrienteeringEvent;
-  selectedCategory?: EventLevel;
 };
 
 function formatEventDate(isoDate: string) {
@@ -17,7 +16,7 @@ function formatEventDate(isoDate: string) {
   }).format(date);
 }
 
-export function RegisterEventSummary({ event, selectedCategory }: RegisterEventSummaryProps) {
+export function RegisterEventSummary({ event }: RegisterEventSummaryProps) {
   return (
     <section className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl">
       <p className="text-base font-semibold text-white">{event.title}</p>
@@ -30,17 +29,6 @@ export function RegisterEventSummary({ event, selectedCategory }: RegisterEventS
           <MapPin className="h-4 w-4" />
           {event.location}
         </p>
-      </div>
-      <div className="mt-3">
-        {selectedCategory ? (
-          <span className="inline-flex rounded-full border border-[#00FF66] bg-[#00FF66]/10 px-3 py-1 text-xs font-semibold text-[#00FF66]">
-            Poziom trudności: {selectedCategory}
-          </span>
-        ) : (
-          <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/60">
-            Poziom trudności: nie wybrano
-          </span>
-        )}
       </div>
     </section>
   );

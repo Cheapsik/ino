@@ -1,5 +1,6 @@
 import { Link, Outlet, createFileRoute, useMatchRoute } from "@tanstack/react-router";
 import { Calendar, MapPin, Search } from "lucide-react";
+import { useMemo, useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { events } from "@/data/events";
 
@@ -26,6 +27,19 @@ function EventsPage() {
   const matchRoute = useMatchRoute();
   const isEventsIndex = Boolean(matchRoute({ to: "/events", fuzzy: false }));
 
+  const [query, setQuery] = useState("");
+
+  const filteredEvents = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) {
+      return events;
+    }
+    return events.filter((evt) => {
+      const haystack = `${evt.title} ${evt.location}`.toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [query]);
+
   if (!isEventsIndex) {
     return <Outlet />;
   }
@@ -38,10 +52,10 @@ function EventsPage() {
   } as const;
 
   const statusClass = {
-    open: "border-primary/30 bg-primary/10 text-primary",
-    closed: "border-yellow-400/50 bg-yellow-400/10 text-yellow-300",
-    live: "border-red-400/50 bg-red-400/10 text-red-300",
-    finished: "border-white/20 bg-white/10 text-white/70",
+    open: "border-white/15 bg-white/8 text-white/80",
+    closed: "border-white/15 bg-white/8 text-white/70",
+    live: "border-red-400/40 bg-red-500/10 text-red-300",
+    finished: "border-white/15 bg-white/8 text-white/65",
   } as const;
 
   const formatDate = (dateIso: string) =>
@@ -67,16 +81,19 @@ function EventsPage() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
           <input
             type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Szukaj..."
+            aria-label="Szukaj wydarzeń"
             className="w-full rounded-xl border border-white/10 bg-white/4 py-3 pl-10 pr-4 text-sm text-white placeholder:text-white/40 focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {events.map((evt) => (
+          {filteredEvents.map((evt) => (
             <article
               key={evt.id}
-              className="glass-soft group flex flex-col rounded-2xl p-5 transition-all hover:border-primary/30"
+              className="glass-soft group flex flex-col rounded-2xl p-5 transition-colors hover:bg-white/[0.06]"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-xs text-white/60">
@@ -119,25 +136,14 @@ function EventsPage() {
                     to="/live"
                     className="flex-1 rounded-xl border border-[#00FF66]/40 bg-[#00FF66]/10 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-[#00FF66] transition-colors hover:bg-[#00FF66]/20"
                   >
-                    Wyniki na żywo
-                  </Link>
-                ) : null}
-
-                {evt.status === "finished" ? (
-                  <Link
-                    to="/events/$id"
-                    params={{ id: evt.id }}
-                    hash="results"
-                    className="flex-1 rounded-xl border border-white/20 bg-white/5 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-white/10"
-                  >
-                    Zobacz wyniki
+                    Wyniki
                   </Link>
                 ) : null}
 
                 <Link
                   to="/events/$id"
                   params={{ id: evt.id }}
-                  className="flex-1 rounded-xl border border-white/10 bg-white/3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-white/80 transition-all group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary"
+                  className="flex-1 rounded-xl border border-white/10 bg-white/3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-white/80 transition-colors hover:bg-white/10 hover:text-white"
                 >
                   Szczegóły
                 </Link>
@@ -145,6 +151,12 @@ function EventsPage() {
             </article>
           ))}
         </div>
+
+        {filteredEvents.length === 0 ? (
+          <p className="mt-8 text-center text-sm text-white/50">
+            Brak wydarzeń pasujących do wyszukiwania.
+          </p>
+        ) : null}
       </main>
     </div>
   );

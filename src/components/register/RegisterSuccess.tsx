@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { CheckCircle2 } from "lucide-react";
+import { categoryLevelTone } from "@/constants/categoryLevelTone";
 import type { EventLevel, OrienteeringEvent } from "@/data/events";
 
 type RegisterSuccessData = {
@@ -50,7 +51,9 @@ export function RegisterSuccess({ event, successData }: RegisterSuccessProps) {
         </p>
         <p className="text-sm text-[#A3B5A8]">
           Poziom:{" "}
-          <span className="inline-flex rounded-full border border-[#00FF66] bg-[#00FF66]/10 px-2 py-0.5 text-xs font-semibold text-[#00FF66]">
+          <span
+            className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${categoryLevelTone[successData.category].active}`}
+          >
             {successData.category}
           </span>
         </p>

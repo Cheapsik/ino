@@ -157,12 +157,12 @@ function EventDetailsContent({ id }: { id: string }) {
     <div className="min-h-dvh bg-black/38">
       <Navbar />
 
-      <main className="mx-auto w-full max-w-5xl space-y-8 px-6 pb-40 pt-6">
+      <main className="mx-auto w-full max-w-5xl space-y-4 px-3 pb-32 pt-3 sm:space-y-8 sm:px-6 sm:pb-40 sm:pt-6">
         <Link to="/events" className="text-sm text-white/70 transition-colors hover:text-white">
           ← Nadchodzące biegi
         </Link>
 
-        <section className="relative mt-3 overflow-hidden rounded-3xl border border-white/10">
+        <section className="relative mt-1.5 overflow-hidden rounded-2xl border border-white/10 sm:mt-3 sm:rounded-3xl">
           {event.mapImageUrl ? (
             <img
               src={event.mapImageUrl}
@@ -208,82 +208,75 @@ function EventDetailsContent({ id }: { id: string }) {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-white/10 bg-white/5 p-4 shadow-xl backdrop-blur-xl [box-shadow:inset_0_1px_0_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.4)]">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1 border-l-2 border-[#00FF66]/30 pl-3">
-              <p className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-[#657A6B]">
-                <Calendar className="h-3.5 w-3.5" />
-                Data i godzina startu
-              </p>
-              <p className="text-base leading-snug font-semibold text-white md:text-lg">
-                {formatEventDate(event.date)}
-              </p>
-            </div>
+        {event.status !== "finished" ? (
+          <section className="rounded-xl border border-white/10 bg-white/5 px-2.5 py-2 shadow-xl backdrop-blur-xl [box-shadow:inset_0_1px_0_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.4)] sm:rounded-3xl sm:px-4 sm:py-3">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 sm:gap-x-4">
+              <div className="space-y-0.5 text-center sm:text-left">
+                <p className="text-[10px] uppercase tracking-widest text-[#657A6B]">
+                  Data i godzina startu
+                </p>
+                <p className="text-sm font-medium leading-snug text-white sm:text-[15px]">
+                  {formatEventDate(event.date)}
+                </p>
+              </div>
 
-            <div className="space-y-1 border-l-2 border-[#00FF66]/30 pl-3">
-              <p className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-[#657A6B]">
-                <MapPin className="h-3.5 w-3.5" />
-                Lokalizacja
-              </p>
-              <a
-                href={event.googleMapsUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="block text-base leading-snug font-semibold text-white transition-colors hover:text-[#00FF66] md:text-lg"
-              >
-                {event.location}
-              </a>
-            </div>
+              <div className="space-y-0.5 text-center sm:border-l sm:border-white/10 sm:pl-3 sm:text-left">
+                <p className="text-[10px] uppercase tracking-widest text-[#657A6B]">Lokalizacja</p>
+                <a
+                  href={event.googleMapsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium leading-snug text-white transition-colors hover:text-[#00FF66] sm:text-[15px]"
+                >
+                  {event.location}
+                </a>
+              </div>
 
-            <div className="space-y-1 border-l-2 border-[#00FF66]/30 pl-3">
-              <p className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-[#657A6B]">
-                <Users className="h-3.5 w-3.5" />
-                Dostępne miejsca
-              </p>
-              <div className="flex flex-col gap-0.5">
-                {event.categories.map((category) => {
-                  const availableSpots = category.spotsTotal - category.spotsTaken;
-                  const colorClass = getSpotClass(availableSpots, category.spotsTotal);
-                  return (
-                    <p
-                      key={category.name}
-                      className="text-sm leading-snug font-semibold text-white"
-                    >
-                      <span className="inline-block min-w-[64px]">{category.name}</span>
-                      <span className={colorClass}>
-                        {availableSpots}/{category.spotsTotal}
-                      </span>
-                    </p>
-                  );
-                })}
+              <div className="space-y-1.5 border-t border-white/10 pt-2 text-center sm:col-span-2 sm:text-left">
+                <p className="text-[10px] uppercase tracking-widest text-[#657A6B]">
+                  Dostępne miejsca
+                </p>
+                <div className="grid grid-cols-3 gap-1 tabular-nums sm:gap-1.5">
+                  {event.categories.map((category) => {
+                    const availableSpots = category.spotsTotal - category.spotsTaken;
+                    const colorClass = getSpotClass(availableSpots, category.spotsTotal);
+                    return (
+                      <div key={category.name} className="space-y-0.5">
+                        <p className="text-[11px] text-white/80">{category.name}</p>
+                        <p className={`text-sm font-medium ${colorClass}`}>
+                          {availableSpots}/{category.spotsTotal}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="space-y-0.5 border-t border-white/10 pt-2 text-center sm:col-span-2 sm:text-left">
+                <p className="text-[10px] uppercase tracking-widest text-[#657A6B]">
+                  Czas do startu
+                </p>
+                <p className="flex flex-wrap items-center justify-center gap-1 text-sm font-medium leading-tight text-white sm:justify-start sm:text-[15px]">
+                  {countdown === "Trwa!" ? (
+                    <span className="relative flex h-2 w-2 shrink-0">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400/80" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-red-400" />
+                    </span>
+                  ) : null}
+                  <span>{countdown}</span>
+                </p>
               </div>
             </div>
+          </section>
+        ) : null}
 
-            <div className="space-y-1 border-l-2 border-[#00FF66]/30 pl-3">
-              <p className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-[#657A6B]">
-                <Clock className="h-3.5 w-3.5" />
-                Czas do startu
-              </p>
-              <p className="flex items-center gap-2 text-base leading-snug font-semibold text-white md:text-lg">
-                {countdown === "Trwa!" ? (
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-red-400" />
-                  </span>
-                ) : null}
-                {countdown}
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-xl [box-shadow:inset_0_1px_0_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.4)]">
-          <h2 className="flex items-center gap-2 text-xl font-semibold text-white">
-            <Clock className="h-5 w-5 text-[#00FF66]" />
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl backdrop-blur-xl [box-shadow:inset_0_1px_0_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.4)] sm:rounded-3xl sm:p-6">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-white sm:text-xl">
+            <Clock className="h-5 w-5 shrink-0 text-[#00FF66] sm:h-5" />
             Harmonogram dnia
           </h2>
 
-          <div className="relative mt-5">
+          <div className="relative mt-3 sm:mt-5">
             <span
               aria-hidden
               className="pointer-events-none absolute bottom-4 left-[5.25rem] top-4 w-0.5 -translate-x-1/2 bg-[#00FF66]/20"
@@ -311,14 +304,14 @@ function EventDetailsContent({ id }: { id: string }) {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-xl [box-shadow:inset_0_1px_0_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.4)]">
-          <h2 className="flex items-center gap-2 text-xl font-semibold text-white">
-            <Map className="h-5 w-5 text-[#00FF66]" />
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl backdrop-blur-xl [box-shadow:inset_0_1px_0_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.4)] sm:rounded-3xl sm:p-6">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-white sm:text-xl">
+            <Map className="h-5 w-5 shrink-0 text-[#00FF66]" />
             Mapa obszaru
           </h2>
 
           {event.mapImageUrl ? (
-            <div className="relative mt-5 overflow-hidden rounded-2xl border border-white/10">
+            <div className="relative mt-3 overflow-hidden rounded-2xl border border-white/10 sm:mt-5">
               <img
                 src={event.mapImageUrl}
                 alt={`Mapa obszaru dla ${event.title}`}
@@ -334,11 +327,11 @@ function EventDetailsContent({ id }: { id: string }) {
               </button>
             </div>
           ) : (
-            <div className="map-grid-bg relative mt-5 flex min-h-[240px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-white/20 px-4 text-center">
+            <div className="map-grid-bg relative mt-3 flex min-h-[200px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-white/20 px-3 text-center sm:mt-5 sm:min-h-[240px] sm:px-4">
               <div className="map-scanline" />
               <Map className="h-12 w-12 text-white/20" />
               <p className="mt-3 text-sm italic text-[#A3B5A8]">
-                Mapa zostanie udostępniona przed startem
+                Mapa zostanie udostępniona po zakończeniu wydarzenia
               </p>
             </div>
           )}
@@ -347,17 +340,17 @@ function EventDetailsContent({ id }: { id: string }) {
         {event.status === "finished" ? (
           <section
             id="results"
-            className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-xl [box-shadow:inset_0_1px_0_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.4)]"
+            className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl backdrop-blur-xl [box-shadow:inset_0_1px_0_rgba(255,255,255,0.05),0_20px_60px_rgba(0,0,0,0.4)] sm:rounded-3xl sm:p-6"
           >
-            <h2 className="flex items-center gap-2 text-xl font-semibold text-white">
-              <Trophy className="h-5 w-5 text-[#00FF66]" />
+            <h2 className="flex items-center gap-2 text-lg font-semibold text-white sm:text-xl">
+              <Trophy className="h-5 w-5 shrink-0 text-[#00FF66]" />
               Wyniki
             </h2>
 
             <Tabs
               value={activeTab}
               onValueChange={(value) => setActiveTab(value as EventLevel)}
-              className="mt-4"
+              className="mt-3 sm:mt-4"
             >
               <TabsList className="w-full bg-white/4">
                 {resultCategories.map((category) => (
@@ -422,7 +415,7 @@ function EventDetailsContent({ id }: { id: string }) {
         ) : null}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-[#0B110D]/80 px-6 py-4 backdrop-blur-xl">
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-[#0B110D]/80 px-4 py-3 backdrop-blur-xl sm:px-6 sm:py-4">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
           <p className="truncate text-sm text-[#A3B5A8]">{event.title}</p>
 

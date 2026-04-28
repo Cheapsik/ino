@@ -1,16 +1,17 @@
 import { Link } from "@tanstack/react-router";
 import inoLogo from "@/assets/ino_logo.png";
+import { hasLiveEvent } from "@/data/events";
 
 type NavbarProps = {
   transparent?: boolean;
 };
 
-const links = [
-  { to: "/events", label: "Imprezy" },
-  { to: "/live", label: "Na żywo" },
-] as const;
-
 export function Navbar({ transparent = false }: NavbarProps) {
+  const links = [
+    { to: "/events", label: "Imprezy", showLivePulse: false },
+    ...(hasLiveEvent() ? ([{ to: "/live", label: "Na żywo", showLivePulse: true }] as const) : []),
+  ];
+
   return (
     <header
       className={
@@ -31,9 +32,15 @@ export function Navbar({ transparent = false }: NavbarProps) {
             <Link
               key={item.to}
               to={item.to}
-              className="rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white/75 transition-colors hover:text-white"
+              className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white/75 transition-colors hover:text-white"
               activeProps={{ className: "bg-primary/15 text-primary" }}
             >
+              {item.showLivePulse ? (
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-red-400" />
+                </span>
+              ) : null}
               {item.label}
             </Link>
           ))}
